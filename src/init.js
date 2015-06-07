@@ -13,7 +13,7 @@ angular.module('eventUtils')
             angular.forEach(events, function(expr, eventName){
 
                 // Parse event arguments
-                var eventArgs = $eventUtils.evalAsArray(expr, scope);
+                var eventArgs = $eventUtils.evalAsArray(scope, expr);
 
                 // Trigger event
                 scope.$broadcast.apply(scope, [eventName].concat(eventArgs));

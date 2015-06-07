@@ -26,16 +26,16 @@
 		</div>
 	</form>
 
-	<div id="login">
+	<div id="login" ev-echo="login">
 
-		<div ev-on="'login': formData = $data" ng-show="formData">
-			Form data is {{formData}}
+		<div isolated-scope ev-on="'login': formData = $data\; counter = counter + 1" ng-show="formData">
+			Got echoed 'login' event with data {{formData}} - {{counter}} times
 		</div>
 
-		<div >
+		<div isolated-scope>
 			<login-form 
 				ev-replace="
-					'submit': 'login';
+					'submit': 'login', $data;
 					'login error': 'error';
 					'login success': 'success';"
 				ev-init="'populate': { 'email'\: 'someone@gmail.com' }">

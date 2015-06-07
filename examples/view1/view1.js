@@ -9,7 +9,7 @@ angular.module('myApp.view1', ['ngRoute', 'myApp.loginForm'])
   });
 }])
 
-.controller('View1Ctrl', ['$scope', function($scope) {
+.controller('View1Ctrl', ['$scope', '$eventUtils', function($scope, $eventUtils) {
 
 	var items = [
 		'Ale',
@@ -17,6 +17,10 @@ angular.module('myApp.view1', ['ngRoute', 'myApp.loginForm'])
 		'Benito',
 		'Bale'
 	];
+
+	$eventUtils.debugEnabled = true;
+
+	console.log($scope);
 
 	$scope.items = [];
 
@@ -66,4 +70,11 @@ angular.module('myApp.view1', ['ngRoute', 'myApp.loginForm'])
 
 	});
 	
+}])
+
+.directive('isolatedScope', [function() {
+	return {
+		restrict: 'A',
+		scope: true
+	};
 }]);

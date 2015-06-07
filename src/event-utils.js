@@ -7,6 +7,7 @@ angular.module('eventUtils')
 		EVENT_SEPARATOR: ',',
 		OPTION_SEPARATOR: '\;',
 		KEY_EXPR_SEPARATOR: ':',
+		debugEnabled: false,
 		domEvents: {
 			
 			// Mouse events
@@ -154,7 +155,11 @@ angular.module('eventUtils')
 		angular.forEach(eventMap, function(expr, eventName){
 
 			handlers[eventName] = function(e, args, isDomEvent){
-				var eventArgs = self.evalAsArray(expr, scope);
+				var eventArgs = self.evalAsArray(scope, expr, {
+					$event: e,
+					$data: args.length > 0 ? args[0] : null,
+					$args: args
+				});
 					
 				if(eventArgs.length === 1){
 					// No arguments defined on this event, pass args from original event
@@ -176,16 +181,16 @@ angular.module('eventUtils')
 				// Trigger replacement event
 				if(isDomEvent){
 					scope.$emit.apply(scope, eventArgs);
-
-					console.debug('Replaced DOM event "%s" into "%s" in element', eventName, eventArgs[0], elem[0]);
+					self.debug('Replaced DOM event "%s" with emitted event "%s" in element', eventName, eventArgs[0], elem[0]);
 				}else{
 					// Trigger replacement event
-					if(self.isChildScope(e.targetScope, scope)){
-						scope.$emit.apply(scope, eventArgs);
-					}else{
+					if(self.isChildScope(scope, e.targetScope)){
 						scope.$broadcast.apply(scope, eventArgs);
+						self.debug('Replaced scope event "%s" with broadcasted event "%s" in element', eventName, eventArgs[0], elem[0]);
+					}else{
+						scope.$emit.apply(scope, eventArgs);
+						self.debug('Replaced scope event "%s" with emitted event "%s" in element', eventName, eventArgs[0], elem[0]);
 					}
-					console.debug('Replaced scope event "%s" into "%s" in element', eventName, eventArgs[0], elem[0]);
 				}
 				scope.$apply();
 			};
@@ -193,6 +198,45 @@ angular.module('eventUtils')
 	
 		// Attach handlers
 		this._attachEventHandlers(elem, scope, handlers);
+	};
+
+	EventUtils.attachEventHandlerEcho = function(elem, scope, eventsStr){
+
+		var events = (eventsStr + '').split(',');
+		var self = this;
+
+		angular.forEach(events, function(eventName){
+
+			eventName = eventName.trim();
+
+			if(!eventName) return; // Skip empty events
+
+			scope.$on(eventName, function(e){
+
+				var args = [];
+				for(var i = 1; i < arguments.length; i++){
+					args.push(arguments[i]);
+				}
+
+				if(self.isChildScope(e.targetScope, scope)){
+
+					// Re-transmit events emitted from children to other siblings
+					var childScope = scope.$$childHead;
+					do{
+						if(childScope){
+							// Process this child scope
+							if(!self.isChildScope(e.targetScope, childScope)){
+								childScope.$broadcast.apply(childScope, [ e.name ].concat(args));
+								self.debug('Echo event %s to scope', e.name, childScope);
+							}
+
+							// Move to next sibling scope
+							childScope = childScope.$$nextSibling;
+						}
+					}while(childScope);
+				}
+			});
+		});
 	};
 
 	EventUtils._attachEventHandlers = function(elem, scope, handlers){
@@ -249,7 +293,7 @@ angular.module('eventUtils')
 				// Parse option
 				var parts = self.splitFirstUnescaped(option, self.KEY_EXPR_SEPARATOR);
 				var keysExpr = self.unescapeChars(parts[0], escapedChars);
-				var keys = self.evalAsArray(keysExpr, scope);
+				var keys = self.evalAsArray(scope, keysExpr);
 				var value = parts.length > 1 ? self.unescapeChars(parts[1], escapedChars): null;
 
 				// Add keys to the map
@@ -263,8 +307,8 @@ angular.module('eventUtils')
 	};
 
 	// Eval the given expression as if it were an array
-	EventUtils.evalAsArray = function(expr, scope){
-		return scope.$eval('[' + expr + ']');
+	EventUtils.evalAsArray = function(scope, expr, locals){
+		return scope.$eval('[' + expr + ']', locals);
 	};
 
 	// Check whether the given scope is child of the given parentScope
@@ -315,6 +359,12 @@ angular.module('eventUtils')
 			str = str.replace(new RegExp('\\\\' + chr, 'g'), chr);
 		}
 		return str;
+	};
+
+	EventUtils.debug = function(){
+		if(this.debugEnabled){
+			console.debug.apply(console, arguments);
+		}
 	};
 
 	return EventUtils;
