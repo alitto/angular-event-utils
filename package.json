@@ -11,7 +11,8 @@
     "prepublish": "bower install"
   },
   "author": {
-    "name": "Pascal Precht"
+    "name": "Alejandro Durante",
+    "email": "alitto@gmail.com"
   },
   "license": "MIT",
   "devDependencies": {
