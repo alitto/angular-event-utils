@@ -8,7 +8,7 @@
     "url": "https://github.com/alitto/angular-event-utils"
   },
   "scripts": {
-    "prepublish": "bower install"
+    "test": "grunt test"
   },
   "author": {
     "name": "Alejandro Durante",
