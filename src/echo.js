@@ -1,7 +1,7 @@
+/*
+angular.module('intentjs')
 
-var module = angular.module('intentjs');
-
-module.directive('evEcho', function() {
+.directive('evEcho', function() {
 	return {
 		restrict: 'A',
 		link: function (scope, elem, attrs, ctrl) {
@@ -9,4 +9,4 @@ module.directive('evEcho', function() {
 			
 		}
 	};
-});
+});*/

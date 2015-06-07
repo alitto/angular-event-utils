@@ -1,7 +1,7 @@
 
-var module = angular.module('eventUtils');
+angular.module('eventUtils')
 
-module.factory('$eventUtils', ['$timeout', function($timeout) {
+.factory('$eventUtils', [function(){
 
 	var EventUtils = {
 		EVENT_SEPARATOR: ',',
@@ -134,8 +134,6 @@ module.factory('$eventUtils', ['$timeout', function($timeout) {
 				if(isDomEvent){
 					scope.$apply();
 				}
-
-				console.debug('Captured event "%s" in element', eventName, elem[0]);
 			};
 		});
 	
@@ -178,20 +176,18 @@ module.factory('$eventUtils', ['$timeout', function($timeout) {
 				// Trigger replacement event
 				if(isDomEvent){
 					scope.$emit.apply(scope, eventArgs);
-					scope.$apply();
 
 					console.debug('Replaced DOM event "%s" into "%s" in element', eventName, eventArgs[0], elem[0]);
 				}else{
-					$timeout(function(){
-						// Trigger replacement event
-						if(self.isChildScope(e.targetScope, scope)){
-							scope.$emit.apply(scope, eventArgs);
-						}else{
-							scope.$broadcast.apply(scope, eventArgs);
-						}
-						console.debug('Replaced scope event "%s" into "%s" in element', eventName, eventArgs[0], elem[0]);
-					});
+					// Trigger replacement event
+					if(self.isChildScope(e.targetScope, scope)){
+						scope.$emit.apply(scope, eventArgs);
+					}else{
+						scope.$broadcast.apply(scope, eventArgs);
+					}
+					console.debug('Replaced scope event "%s" into "%s" in element', eventName, eventArgs[0], elem[0]);
 				}
+				scope.$apply();
 			};
 		});
 	

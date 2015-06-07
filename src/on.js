@@ -1,5 +1,5 @@
 
-angular.module('eventUtils', [])
+angular.module('eventUtils')
 .directive('evOn', ['$eventUtils', function($eventUtils) {
 	return {
 		restrict: 'A',
