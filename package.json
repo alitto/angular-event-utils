@@ -1,0 +1,28 @@
+{
+  "name": "angular-translate",
+  "version": "0.1.0",
+  "description": "angular-event-utils: Collection of AngularJS directives to work with scope and DOM events in a convenient way",
+  "main": "dist/event-utils.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alitto/angular-event-utils"
+  },
+  "scripts": {
+    "prepublish": "bower install"
+  },
+  "author": {
+    "name": "Pascal Precht"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "bower": "^1.4.1",
+    "grunt": "~0.4.1",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-concat": "~0.3.x",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-contrib-jshint": "~0.11.x",
+    "grunt-contrib-uglify": "~0.2.x",
+    "grunt-contrib-watch": "~0.4.2",
+    "load-grunt-tasks": "~0.2.0"
+  }
+}

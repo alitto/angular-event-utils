@@ -1,0 +1,63 @@
+<div
+	ev-on="'sort items' : items.sort()">
+
+	<p>This is the partial for view 1.</p>
+
+	<ul ev-init="'reset'">
+		<li ng-repeat="item in items">
+			{{item}}
+			<a ev-replace="'mouseup' : 'remove', $index">Eliminar</a>
+		</li>
+	</ul>
+
+	<button type="button" ev-replace="'click': 'sort items'">Sort</button>
+	<button type="button" ev-replace="'click': 'reset'">Reset</button>
+	<button type="button" ev-replace="'click': items.length > 5 ? 'reset' : 'sort'">Toggle</button>
+
+
+	<button type="button" ev-replace="'click': 'greet user'"
+		ev-on="'click' : items.sort()">Some button</button>
+
+	<form swipedown-intent="submit" ev-replace="'submit': 'add'">
+		<div>
+			<input type="text" ng-model="newItem" placeholder="New item.." />
+			<button type="button" ev-replace="'click': 'add'">Add item</button>
+			<button type="button" on-replace="'click': 'add'">Add item and sort</button>
+		</div>
+	</form>
+
+	<div id="login">
+
+		<div ev-on="'login': formData = $data" ng-show="formData">
+			Form data is {{formData}}
+		</div>
+
+		<div >
+			<login-form 
+				ev-replace="
+					'submit': 'login';
+					'login error': 'error';
+					'login success': 'success';"
+				ev-init="'populate': { 'email'\: 'someone@gmail.com' }">
+			</login-form>
+		</div>
+	</div>
+
+
+	<div id="target" style="overflow: scroll; width: 200px; height: 100px;"
+		ev-replace="'scroll': 'greet user'">
+	  Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+	  sed do eiusmod tempor incididunt ut labore et dolore magna
+	  aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+	  ullamco laboris nisi ut aliquip ex ea commodo consequat.
+	  Duis aute irure dolor in reprehenderit in voluptate velit
+	  esse cillum dolore eu fugiat nulla pariatur. Excepteur
+	  sint occaecat cupidatat non proident, sunt in culpa qui
+	  officia deserunt mollit anim id est laborum.
+	</div>
+
+	<div ev-on="'image loaded': imageLoaded=true">
+		<p ng-show="imageLoaded">Image successfully loaded!</p>
+		<img width="200" ng-src="http://www.noaanews.noaa.gov/stories/images/goes-12-firstimage-large081701.jpg" ev-as="'load': 'image loaded'" >
+	</div>
+</div>

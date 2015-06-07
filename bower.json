@@ -1,9 +1,13 @@
 {
-  "name": "intent-js",
-  "description": "IntentJS - Express intent in AngularJS",
+  "name": "angular-event-utils",
+  "description": "angular-event-utils: Collection of AngularJS directives to work with scope and DOM events in a convenient way",
   "version": "0.1.0",
   "license": "MIT",
   "private": false,
+  "author": {
+    "name": "Alejandro Durante",
+    "email": "alitto@gmail.com"
+  },
   "dependencies": {
     "angular": "1.2.x",
     "angular-route": "1.2.x",
