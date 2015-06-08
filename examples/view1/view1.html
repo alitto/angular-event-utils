@@ -3,38 +3,40 @@
 
 	<p>This is the partial for view 1.</p>
 
-	<ul ev-init="'reset'">
-		<li ng-repeat="item in items">
-			{{item}}
-			<a ev-replace="'mouseup' : 'remove', $index">Eliminar</a>
-		</li>
-	</ul>
+	<div ev-init="'reset'"
+			ev-upon="items.length > 6 : 'reset'">
+		<ul>
+			<li ng-repeat="item in items">
+				{{item}}
+				<a ev-replace="'mouseup' : 'remove', $index">Eliminar</a>
+			</li>
+		</ul>
 
-	<button type="button" ev-replace="'click': 'sort items'">Sort</button>
-	<button type="button" ev-replace="'click': 'reset'">Reset</button>
-	<button type="button" ev-replace="'click': items.length > 5 ? 'reset' : 'sort'">Toggle</button>
+		<button type="button" ev-replace="'click': 'sort items'">Sort</button>
+		<button type="button" ev-replace="'click': 'reset'">Reset</button>
+		<button type="button" ev-replace="'click': items.length > 5 ? 'reset' : 'sort'">Toggle</button>
 
 
-	<button type="button" ev-replace="'click': 'greet user'"
-		ev-on="'click' : items.sort()">Some button</button>
+		<button type="button" ev-replace="'click': 'greet user'"
+			ev-on="'click' : items.sort()">Some button</button>
 
-	<form swipedown-intent="submit" ev-replace="'submit': 'add'">
-		<div>
-			<input type="text" ng-model="newItem" placeholder="New item.." />
-			<button type="button" ev-replace="'click': 'add'">Add item</button>
-			<button type="button" on-replace="'click': 'add'">Add item and sort</button>
-		</div>
-	</form>
+		<form ev-replace="'submit': 'add'">
+			<div>
+				<input type="text" ng-model="newItem" placeholder="New item.." />
+				<button type="button" ev-replace="'click': 'add'">Add item</button>
+				<button type="button" on-replace="'click': 'add'">Add item and sort</button>
+			</div>
+		</form>
+	</div>
 
-	<div id="login" ev-echo="login">
+	<div id="login" ev-echo="'login'">
 
 		<div isolated-scope ev-on="'login': formData = $data\; counter = counter + 1" ng-show="formData">
 			Got echoed 'login' event with data {{formData}} - {{counter}} times
 		</div>
 
 		<div isolated-scope>
-			<login-form 
-				ev-replace="
+			<login-form ev-replace="
 					'submit': 'login', $data;
 					'login error': 'error';
 					'login success': 'success';"

@@ -30,8 +30,8 @@ angular.module('eventUtils')
 
 	var EventUtils = {
 		EVENT_SEPARATOR: ',',
-		OPTION_SEPARATOR: '\;',
-		KEY_EXPR_SEPARATOR: ':',
+		ENTRY_SEPARATOR: '\;',
+		KEY_VALUE_SEPARATOR: ':',
 		debugEnabled: false,
 		domEvents: {
 			
@@ -227,7 +227,7 @@ angular.module('eventUtils')
 
 	EventUtils.attachEventHandlerEcho = function(elem, scope, eventsStr){
 
-		var events = (eventsStr + '').split(',');
+		var events = this.evalAsArray(scope, eventsStr);
 		var self = this;
 
 		angular.forEach(events, function(eventName){
@@ -259,6 +259,44 @@ angular.module('eventUtils')
 							childScope = childScope.$$nextSibling;
 						}
 					}while(childScope);
+				}
+			});
+		});
+	};
+
+	EventUtils.attachEventHandlerStop = function(elem, scope, eventsStr){
+
+		var events = this.evalAsArray(scope, eventsStr);
+		var self = this;
+		angular.forEach(events, function(eventName){
+
+			// Stop propagation when any of these events fire
+			scope.$on(eventName, function(e){
+				if(e.stopPropagation) e.stopPropagation();
+				if(e.preventDefault) e.preventDefault();
+
+				self.debug('Stopped event %s', eventName);
+				return false;
+			});
+		});
+	};
+
+	EventUtils.attachConditionTriggers = function(elem, scope, conditionsStr){
+
+		var conditions = this._parseEntries(conditionsStr);
+		var self = this;
+		
+		// Register a watcher for every condition
+		angular.forEach(conditions, function(condition){
+			
+			scope.$watch(condition.key, function(newValue, oldValue){
+
+				if(newValue !== oldValue && 
+					newValue){
+					// Trigger event when newValue is true
+					var eventArgs = self.evalAsArray(scope, condition.value);
+					scope.$emit.apply(scope, eventArgs);
+					self.debug('Emitted event %s because condition \'%s\' evals to true', eventArgs[0], condition.key);
 				}
 			});
 		});
@@ -308,27 +346,46 @@ angular.module('eventUtils')
 	EventUtils.parseOptions = function(str, scope){
 		
 		var map = {};
-		var options = this.splitUnescaped(str, this.OPTION_SEPARATOR);
+		var entries = this._parseEntries(str);
 		var self = this;
-		var escapedChars = self.OPTION_SEPARATOR + self.KEY_EXPR_SEPARATOR;
+		
+		angular.forEach(entries, function(entry){
+			// Parse keys
+			var keys = self.evalAsArray(scope, entry.key);
 
-		angular.forEach(options, function(option){
+			// Add keys to the map
+			angular.forEach(keys, function(key){
+				map[key] = entry.value;
+			});
+		});
 
-			if(option){
-				// Parse option
-				var parts = self.splitFirstUnescaped(option, self.KEY_EXPR_SEPARATOR);
-				var keysExpr = self.unescapeChars(parts[0], escapedChars);
-				var keys = self.evalAsArray(scope, keysExpr);
+		return map;
+	};
+
+	EventUtils._parseEntries = function(str){
+		
+		var result = [];
+		var entries = this.splitUnescaped(str, this.ENTRY_SEPARATOR);
+		var self = this;
+		var escapedChars = self.ENTRY_SEPARATOR + self.KEY_VALUE_SEPARATOR;
+
+		angular.forEach(entries, function(entry){
+
+			if(entry){
+				// Parse key and value
+				var parts = self.splitFirstUnescaped(entry, self.KEY_VALUE_SEPARATOR);
+				var key = self.unescapeChars(parts[0], escapedChars);
 				var value = parts.length > 1 ? self.unescapeChars(parts[1], escapedChars): null;
 
-				// Add keys to the map
-				angular.forEach(keys, function(key){
-					map[key] = value;
+				// Add entry
+				result.push({
+					key: key,
+					value: value
 				});
 			}
 		});
 
-		return map;
+		return result;
 	};
 
 	// Eval the given expression as if it were an array
@@ -438,6 +495,28 @@ angular.module('eventUtils')
 			
 			// Attach event handlers and stop propagation
 			$eventUtils.attachEventHandlerReplacement(elem, scope, attrs.evReplace, true);
+		}
+	};
+}]);
+angular.module('eventUtils')
+
+.directive('evStop', ['$eventUtils', function($eventUtils) {
+	return {
+		priority: Number.MAX_SAFE_INTEGER,
+        restrict: 'A',
+		link: function (scope, elem, attrs, ctrl) {
+			$eventUtils.attachEventHandlerStop(elem, scope, attrs.evStop);
+		}
+	};
+}]);
+angular.module('eventUtils')
+
+.directive('evUpon', ['$eventUtils', function($eventUtils) {
+	return {
+		restrict: 'A',
+		link: function (scope, elem, attrs, ctrl) {
+
+			$eventUtils.attachConditionTriggers(elem, scope, attrs.evUpon);
 		}
 	};
 }]);
