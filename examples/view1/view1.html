@@ -1,32 +1,36 @@
-<div
-	ev-on="'sort items' : items.sort()">
+<div>
 
-	<p>This is the partial for view 1.</p>
+	<div class="todo-list" 
+			ev-on="'add item' : items.indexOf($data) === -1 ? items.push($data) : void()\; $broadcast('item added');
+				   'remove item' : items.splice($data, 1);
+				   'sort items' : items.sort();
+				   'reset items' : items = [ 'Item 1', 'Item 2', 'Item 3', 'Item 4' ]"
+			ev-init="'reset items'"
+			ev-upon="items.length > 6 : 'warning'">
 
-	<div ev-init="'reset'"
-			ev-upon="items.length > 6 : 'reset'">
+		<h3>My TO-DO list</h3>
+
 		<ul>
 			<li ng-repeat="item in items">
 				{{item}}
-				<a ev-replace="'mouseup' : 'remove', $index">Eliminar</a>
+				<a ev-as="'click' : 'remove item', $index">Eliminar</a>
 			</li>
 		</ul>
 
-		<button type="button" ev-replace="'click': 'sort items'">Sort</button>
-		<button type="button" ev-replace="'click': 'reset'">Reset</button>
-		<button type="button" ev-replace="'click': items.length > 5 ? 'reset' : 'sort'">Toggle</button>
+		<p>Actions: 
+			<button type="button" ev-as="'click': 'sort items'">Sort</button>
+			<button type="button" ev-as="'click': 'reset items'">Reset</button>
+		</p>
 
-
-		<button type="button" ev-replace="'click': 'greet user'"
-			ev-on="'click' : items.sort()">Some button</button>
-
-		<form ev-replace="'submit': 'add'">
+		<form ev-as="'submit': 'add item', newItem"
+			  ev-on="'item added': newItem = ''">
 			<div>
-				<input type="text" ng-model="newItem" placeholder="New item.." />
-				<button type="button" ev-replace="'click': 'add'">Add item</button>
-				<button type="button" on-replace="'click': 'add'">Add item and sort</button>
+				<input type="text" ng-model="newItem" placeholder="New item.." required />
+				<button type="submit">Add item</button>
 			</div>
 		</form>
+
+		<button type="button" ev-replace="'click': 'greet user'">Say hi</button>
 	</div>
 
 	<div id="login" ev-echo="'login'">
