@@ -42,7 +42,7 @@ module.exports = function(grunt) {
         concat: {
             js: {
                 src: srcFiles,
-                dest: '<%=  build_dir %>/event-utils.js'
+                dest: '<%=  build_dir %>/angular-event-utils.js'
             }
         },
         env: {
@@ -62,7 +62,7 @@ module.exports = function(grunt) {
                     '<%= components_dir %>/angular-mocks/angular-mocks.js',
 
                     // Library
-                    '<%=  build_dir %>/event-utils.min.js'
+                    '<%=  build_dir %>/angular-event-utils.min.js'
                 ],
                 options: {
                     specs: 'test/*Spec.js',

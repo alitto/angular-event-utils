@@ -6,9 +6,13 @@
 				   'sort items' : items.sort();
 				   'reset items' : items = [ 'Item 1', 'Item 2', 'Item 3', 'Item 4' ]"
 			ev-init="'reset items'"
-			ev-upon="items.length > 6 : 'warning'">
+			ev-when="items.length > 5 : 'warning'">
 
 		<h3>My TO-DO list</h3>
+
+		<div ev-on="'warning': showWarning=true" ng-show="showWarning" class="alert alert-warning">
+			TO-DO list now has more than 5 elements
+		</div>
 
 		<ul>
 			<li ng-repeat="item in items">
