@@ -83,7 +83,7 @@ You can reference the original DOM or scope event and its arguments using the fo
 <a ev-as="'click' : 'enable', { foo: 'bar' } ">Enable</a>
 <a ev-as="'click' : 'disable', { foo: 'bar', data: $data, clickEvent: $event } ">Disable</a>
 ```
-*Note: ev-as does not stop the propagation of the original event (in this case, button's 'click' event)*
+*Note: ev-as does not stop the propagation of the original event*
 
 ###ev-echo=" 'event name 1', 'event name 2', ... "
 This directive allows to propagate scope events emitted on any of the child scopes to its siblings.
@@ -146,8 +146,37 @@ E.g.: Capture 'success' event and show the message passed in the event's argumen
 </div>
 ```
 
-###ev-replace
+###ev-replace="'event name' : 'replaced event', *arg1, *arg2, ..."
+This directive allows to *replace* or *override* DOM and scope events triggered on this element/scope with a scope event with a different name and, optionally, different arguments.
+This directive is similar the `ev-as` directive but they differ in the fact that `ev-replace` stops the propagation of original events and `ev-as` doesn't.
 
+When replacing Angular's scope events, this directive will use scope.$emit to propagate the new event if the original event was emitted by any of the parent scopes, and will use scope.$broadcast instead if the original event was broadcasted by any of the child scopes. If the original event was emitted or broadcasted in the same scope, scope.$emit is used to propagate it.
+
+####Replace single event
+E.g.: replace link's 'click' event with a scope event named 'enable':
+```html
+<a ev-replace="'click' : 'enable'">Enable</a>
+```
+####Replace multiple events
+```html
+<a ev-replace="'click' : 'enable'; 'hover': 'enable hovered' ">Enable</a>
+```
+####Replace event with additional data
+```html
+<a ev-replace="'click' : 'enable', { foo: 'bar' }">Enable</a>
+<a ev-replace="'click' : 'disable', { foo: 'bar' }">Disable</a>
+```
+####Access original event and arguments
+You can reference the original DOM or scope event and its arguments using the follwing vars:
+* `$event` Reference to aliased DOM or scope event
+* `$args` Reference to an array containing the arguments of the aliased DOM or scope event
+* `$data` Reference to the first element of the $args array (equivalent to $args[0])
+
+```html
+<a ev-replace="'click' : 'enable', { foo: 'bar' } ">Enable</a>
+<a ev-replace="'click' : 'disable', { foo: 'bar', data: $data, clickEvent: $event } ">Disable</a>
+```
+*Note: ev-replace stops the propagation of the original event*
 
 ###ev-stop
 
