@@ -73,11 +73,11 @@ E.g.: translate link's 'click' event into a scope event named 'enable':
 <a ev-as="'click' : 'enable', { foo: 'bar' }">Enable</a>
 <a ev-as="'click' : 'disable', { foo: 'bar' }">Disable</a>
 ```
-####Access original event and event arguments
+####Access original event and arguments
 You can reference the original DOM or scope event and its arguments using the follwing vars:
-* `$event`: Reference to aliased DOM or scope event
-* `$args`: Reference to an array containing the arguments of the aliased DOM or scope event
-* `$data`: Reference to the first element of the $args array (equivalent to $args[0])
+* `$event` Reference to aliased DOM or scope event
+* `$args` Reference to an array containing the arguments of the aliased DOM or scope event
+* `$data` Reference to the first element of the $args array (equivalent to $args[0])
 
 ```html
 <a ev-as="'click' : 'enable', { foo: 'bar' } ">Enable</a>
@@ -104,11 +104,50 @@ E.g.: Assuming #div1 and #div2 have isolated scopes, the ev-echo directive in #m
 </div>
 ```
 
-###ev-init
+###ev-init=" 'event name', *arg1, *arg2, ..."
+This directive allows to fire a custom scope event when an element is completely initialized, after all the directives have been compiled and linked.
 
-###ev-on
+E.g.: Broadcast the 'populate' event to the <login-form> component along with some initialization data once it has been compiled and linked:
+```html
+<login-form ev-init="'populate' : { name: 'someone@email.com' }">
+</login-form>
+```
+
+###ev-on=" 'event name' : expression to evaluate"
+This directive allows to capture specific events and perform some operations on the current scope. 
+
+####Capture single event
+E.g.: Capture 'success' event and display a message to the user:
+```html
+<div ev-on="'success' : showMessage = true" ng-show="showMessage">
+    Your are awesome!
+</div>
+```
+
+####Capture multiple events
+E.g.: Capture 'stopped' and 'paused' events and display a message to the user:
+```html
+<div ev-on="'stopped' : status = 'Stopped'; 
+            'paused' : status = 'Paused';" ng-show="status">
+    Current status is {{status}}
+</div>
+```
+
+####Access original event and arguments
+You can reference the original DOM or scope event and its arguments using the follwing vars:
+* `$event` Reference to aliased DOM or scope event
+* `$args` Reference to an array containing the arguments of the aliased DOM or scope event
+* `$data` Reference to the first element of the $args array (equivalent to $args[0])
+
+E.g.: Capture 'success' event and show the message passed in the event's arguments:
+```html
+<div ev-on="'success' : msg = $data" ng-show="msg">
+    {{msg}}
+</div>
+```
 
 ###ev-replace
+
 
 ###ev-stop
 
