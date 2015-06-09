@@ -223,10 +223,11 @@ You can reference the original DOM or scope event and its arguments using the fo
 This directive stops the propagation of the events listed in its value.
 
 E.g.: Stop the 'saved' event in a div to prevent it from reaching parent scopes:
-
+```html
 <div ev-stop="'saved'">
     ...
 </div>
+```
 
 <div id="ev-when"> </div>
 ###`ev-when="condition expression : 'event name', *arg1, *arg2, ..."`
