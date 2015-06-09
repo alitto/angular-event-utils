@@ -121,7 +121,7 @@ You can reference the original DOM or scope event and its arguments using the fo
 ```
 *Note: ev-as does not stop the propagation of the original event*
 
-<div id="ev-echo">&nsbsp;</div>
+<div id="ev-echo"> </div>
 ###`ev-echo="'event name 1', 'event name 2', ..."`
 This directive allows to propagate scope events emitted on any of the child scopes to its siblings.
 
