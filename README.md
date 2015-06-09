@@ -57,6 +57,8 @@ Replace form's 'submit' events with the 'save' scope event:
 ###ev-as=" 'event name' : 'event alias', *arg1, *arg2, ... "
 This directive allows to *translate* or *alias* DOM and scope events by triggering a scope event with a different name. This is useful when you want to emit/broadcast a scope event every time the user interacts with an element. 
 
+When translating Angular's scope events, this directive will use scope.$emit to propagate the new event if the original event was emitted by any of the parent scopes, and will use scope.$broadcast instead if the original event was broadcasted by any of the child scopes. If the original event was emitted or broadcasted in the same scope, scope.$emit is used to propagate it.
+
 ####Translate single event
 E.g.: translate link's 'click' event into a scope event named 'enable':
 ```html
@@ -68,8 +70,8 @@ E.g.: translate link's 'click' event into a scope event named 'enable':
 ```
 ####Translate event with additional data
 ```html
-<a ev-as="'click' : 'enable', { foo: 'bar' } ">Enable</a>
-<a ev-as="'click' : 'disable', { foo: 'bar' } ">Disable</a>
+<a ev-as="'click' : 'enable', { foo: 'bar' }">Enable</a>
+<a ev-as="'click' : 'disable', { foo: 'bar' }">Disable</a>
 ```
 ####Access original event and event arguments
 You can reference the original DOM or scope event and its arguments using the follwing vars:
@@ -81,8 +83,26 @@ You can reference the original DOM or scope event and its arguments using the fo
 <a ev-as="'click' : 'enable', { foo: 'bar' } ">Enable</a>
 <a ev-as="'click' : 'disable', { foo: 'bar', data: $data, clickEvent: $event } ">Disable</a>
 ```
+*Note: ev-as does not stop the propagation of the original event (in this case, button's 'click' event)*
 
-###ev-echo
+###ev-echo=" 'event name 1', 'event name 2', ... "
+This directive allows to propagate scope events emitted on any of the child scopes to its siblings.
+
+E.g.: Assuming #div1 and #div2 have isolated scopes, the ev-echo directive in #main will broadcast the 'save' events coming from #div2 to #div1.
+```html
+<div id="main" ev-echo="'save'">
+    <div id="div1" isolated-scope>
+        ...
+        <div ev-on="'save': showMessage" ng-show="showMessage">
+            Saved was clicked!
+        </div>
+    </div>
+    <div id="div2" isolated-scope>
+        ...
+        <button ev-on="'click' : 'save'">Save</button>
+    </div>
+</div>
+```
 
 ###ev-init
 
