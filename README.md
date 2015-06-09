@@ -178,6 +178,31 @@ You can reference the original DOM or scope event and its arguments using the fo
 ```
 *Note: ev-replace stops the propagation of the original event*
 
-###ev-stop
+###ev-stop="'event name 1', 'event name 2', ..."
+This directive stops the propagation of the events listed in its value.
 
-###ev-when
+E.g.: Stop the 'saved' event in a div to prevent it from reaching parent scopes:
+
+<div ev-stop="'saved'">
+    ...
+</div>
+
+###ev-when="condition expression : 'event name', *arg1, *arg2, ..."
+This directive allows to trigger a custom scope event when a given condition is met (expression evaluates to true). 
+
+E.g.: Emit the 'completed' event when counter reaches 5:
+```html
+<div ev-when="counter >= 5 : 'completed'">
+    ...
+</div>
+```
+
+##Issues
+
+Discovered a bug? Please create an issue here on GitHub!
+
+[Issues](https://github.com/alitto/angular-event-utils/issues)
+
+##License
+
+Licensed under MIT.
