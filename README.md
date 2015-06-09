@@ -52,9 +52,35 @@ Replace form's 'submit' events with the 'save' scope event:
 ```
 *Note: ev-replace stops the propagation of the original event (in this case, form's 'submit' event)*
 
-##Directives
+##Motivation
+*angular-event-utils* aims to simplify and promote the use of custom events to implement the communication between elements, directives, services and other components inside an Angular application. 
+Using custom events to capture and represent user's intention provides some benefits over the use of low level events such as 'click' or 'scroll':
+* **Better semantics**: Low level events such as 'click' or 'mousedown' do a poor job describing the actual user intention. On the other hand, custom events like 'enable' or 'sort' are more representative of what the user expects when clicking an element. E.g.:
+```html
+    // Compare this:
+    <a ng-click="enable = true">Enable</a>
+    // With this:
+    <a ev-as="'click': 'enable'">Enable</a>
+```
+* **Loosely coupled components**: Elements and directives that communicate with the scope and other elements using events don't require the injection of dependencies or any data to be passed using attribute bindings. These components make no assumption about the context and hence, they can be used anywhere. E.g.:
+```html
+    // 1. Compare this pseudo-directive (callback attribute is bound to scope's callback var):
+    <switch callback="=">
+        <a ng-click="callback(true)">Enable</a>
+    </switch>
+    // 2. With this (clicking the link triggers the 'enable' event):
+    <switch>
+        <a ev-replace="'click' : 'enable'">Enable</a>
+    </switch>
+    // The 2nd directive can be included in any scope and trigger 
+    // several functions/handlers upon emitting the 'enable' event 
+    // whereas the first directive can only notify its parent scope 
+    // and requires it to have a single handler function defined.
+```
 
-###ev-as=" 'event name' : 'event alias', *arg1, *arg2, ... "
+##Directives Reference
+
+###`ev-as="'event name' : 'event alias', *arg1, *arg2, ..."`
 This directive allows to *translate* or *alias* DOM and scope events by triggering a scope event with a different name. This is useful when you want to emit/broadcast a scope event every time the user interacts with an element. 
 
 When translating Angular's scope events, this directive will use scope.$emit to propagate the new event if the original event was emitted by any of the parent scopes, and will use scope.$broadcast instead if the original event was broadcasted by any of the child scopes. If the original event was emitted or broadcasted in the same scope, scope.$emit is used to propagate it.
@@ -85,7 +111,7 @@ You can reference the original DOM or scope event and its arguments using the fo
 ```
 *Note: ev-as does not stop the propagation of the original event*
 
-###ev-echo=" 'event name 1', 'event name 2', ... "
+###`ev-echo="'event name 1', 'event name 2', ..."`
 This directive allows to propagate scope events emitted on any of the child scopes to its siblings.
 
 E.g.: Assuming #div1 and #div2 have isolated scopes, the ev-echo directive in #main will broadcast the 'save' events coming from #div2 to #div1.
@@ -104,7 +130,7 @@ E.g.: Assuming #div1 and #div2 have isolated scopes, the ev-echo directive in #m
 </div>
 ```
 
-###ev-init=" 'event name', *arg1, *arg2, ..."
+###`ev-init="'event name', *arg1, *arg2, ..."`
 This directive allows to fire a custom scope event when an element is completely initialized, after all the directives have been compiled and linked.
 
 E.g.: Broadcast the 'populate' event to the <login-form> component along with some initialization data once it has been compiled and linked:
@@ -113,7 +139,7 @@ E.g.: Broadcast the 'populate' event to the <login-form> component along with so
 </login-form>
 ```
 
-###ev-on=" 'event name' : expression to evaluate"
+###`ev-on="'event name' : expression to evaluate"`
 This directive allows to capture specific events and perform some operations on the current scope. 
 
 ####Capture single event
@@ -146,7 +172,7 @@ E.g.: Capture 'success' event and show the message passed in the event's argumen
 </div>
 ```
 
-###ev-replace="'event name' : 'replaced event', *arg1, *arg2, ..."
+###`ev-replace="'event name' : 'replaced event', *arg1, *arg2, ..."`
 This directive allows to *replace* or *override* DOM and scope events triggered on this element/scope with a scope event with a different name and, optionally, different arguments.
 This directive is similar the `ev-as` directive but they differ in the fact that `ev-replace` stops the propagation of original events and `ev-as` doesn't.
 
@@ -178,7 +204,7 @@ You can reference the original DOM or scope event and its arguments using the fo
 ```
 *Note: ev-replace stops the propagation of the original event*
 
-###ev-stop="'event name 1', 'event name 2', ..."
+###`ev-stop="'event name 1', 'event name 2', ..."`
 This directive stops the propagation of the events listed in its value.
 
 E.g.: Stop the 'saved' event in a div to prevent it from reaching parent scopes:
@@ -187,7 +213,7 @@ E.g.: Stop the 'saved' event in a div to prevent it from reaching parent scopes:
     ...
 </div>
 
-###ev-when="condition expression : 'event name', *arg1, *arg2, ..."
+###`ev-when="condition expression : 'event name', *arg1, *arg2, ..."`
 This directive allows to trigger a custom scope event when a given condition is met (expression evaluates to true). 
 
 E.g.: Emit the 'completed' event when counter reaches 5:
@@ -201,7 +227,7 @@ E.g.: Emit the 'completed' event when counter reaches 5:
 
 Discovered a bug? Please create an issue here on GitHub!
 
-[Issues](https://github.com/alitto/angular-event-utils/issues)
+* [Issues](https://github.com/alitto/angular-event-utils/issues)
 
 ##License
 
