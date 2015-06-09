@@ -28,7 +28,7 @@ When you are done, your setup should look similar to the following:
 ##Basic Usage
 
 ###Capturing events
-Capture scope event 'saved' in a div element and display a success message:
+Capture 'saved' scope event in a div element and display a success message:
 
 ```html
 <div ev-on="'saved' : showMessage = true" ng-show="showMessage" class="alert alert-success">
