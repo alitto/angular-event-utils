@@ -80,6 +80,16 @@ Using custom events to capture and represent user's intention provides some bene
 
 ##Directives Reference
 
+###Summary
+* [ev-as="..."](#ev-as) : Translate or alias events
+* [ev-echo="..."](#ev-echo) : Propagate events to child scopes
+* [ev-init="..."](#ev-init) : Trigger custom events on upon initialization
+* [ev-on="..."](#ev-on) : Capture events and evaluate expression
+* [ev-replace="..."](#ev-replace) : Replace events
+* [ev-stop="..."](#ev-stop) : Stop events propagation 
+* [ev-when="..."](#ev-when) : Trigger events when condition is met
+
+<div id="ev-as">&nsbsp;</div>
 ###`ev-as="'event name' : 'event alias', *arg1, *arg2, ..."`
 This directive allows to *translate* or *alias* DOM and scope events by triggering a scope event with a different name. This is useful when you want to emit/broadcast a scope event every time the user interacts with an element. 
 
@@ -111,6 +121,7 @@ You can reference the original DOM or scope event and its arguments using the fo
 ```
 *Note: ev-as does not stop the propagation of the original event*
 
+<div id="ev-echo">&nsbsp;</div>
 ###`ev-echo="'event name 1', 'event name 2', ..."`
 This directive allows to propagate scope events emitted on any of the child scopes to its siblings.
 
@@ -130,6 +141,7 @@ E.g.: Assuming #div1 and #div2 have isolated scopes, the ev-echo directive in #m
 </div>
 ```
 
+<div id="ev-init">&nsbsp;</div>
 ###`ev-init="'event name', *arg1, *arg2, ..."`
 This directive allows to fire a custom scope event when an element is completely initialized, after all the directives have been compiled and linked.
 
@@ -139,6 +151,7 @@ E.g.: Broadcast the 'populate' event to the <login-form> component along with so
 </login-form>
 ```
 
+<div id="ev-on">&nsbsp;</div>
 ###`ev-on="'event name' : expression to evaluate"`
 This directive allows to capture specific events and perform some operations on the current scope. 
 
@@ -172,6 +185,7 @@ E.g.: Capture 'success' event and show the message passed in the event's argumen
 </div>
 ```
 
+<div id="ev-replace">&nsbsp;</div>
 ###`ev-replace="'event name' : 'replaced event', *arg1, *arg2, ..."`
 This directive allows to *replace* or *override* DOM and scope events triggered on this element/scope with a scope event with a different name and, optionally, different arguments.
 This directive is similar the `ev-as` directive but they differ in the fact that `ev-replace` stops the propagation of original events and `ev-as` doesn't.
@@ -204,6 +218,7 @@ You can reference the original DOM or scope event and its arguments using the fo
 ```
 *Note: ev-replace stops the propagation of the original event*
 
+<div id="ev-stop">&nsbsp;</div>
 ###`ev-stop="'event name 1', 'event name 2', ..."`
 This directive stops the propagation of the events listed in its value.
 
@@ -213,6 +228,7 @@ E.g.: Stop the 'saved' event in a div to prevent it from reaching parent scopes:
     ...
 </div>
 
+<div id="ev-when">&nsbsp;</div>
 ###`ev-when="condition expression : 'event name', *arg1, *arg2, ..."`
 This directive allows to trigger a custom scope event when a given condition is met (expression evaluates to true). 
 
